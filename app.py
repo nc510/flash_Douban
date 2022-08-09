@@ -35,7 +35,18 @@ def movie():
 
 @app.route('/score')
 def score():
-    return render_template('score.html')
+    score = []  # 评分
+    num = []  # 每个电影评分的对应的电影数量
+    con = sqlite3.connect("movie250.db")
+    cur = con.cursor()
+    sql = "select score,count(score) from movie250 group by score"
+    data = cur.execute(sql)
+    for item in data:
+        score.append(str(item[0]))
+        num.append(item[1])
+    cur.close()
+    con.close()
+    return render_template('score.html', score=score, num=num)
 
 
 @app.route('/team')
@@ -49,4 +60,4 @@ def word():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
